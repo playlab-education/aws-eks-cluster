@@ -1,0 +1,173 @@
+schema: draft-07
+name: aws-eks-cluster
+description: An open source container orchestration platform that automates many of the manual processes involved in deploying, managing, and scaling containerized applications.
+ref: github.com/massdriver-cloud/massdriver-bundles
+access: public
+type: bundle
+
+steps:
+  - path: src
+    provisioner: terraform
+  - path: core-services
+    provisioner: terraform
+  - path: custom-resources
+    provisioner: terraform
+
+params:
+  examples:
+    - __name: Development
+      k8s_version: "1.21"
+      node_groups:
+        - name_suffix: shared
+          instance_type: t3.medium
+          min_size: 1
+          max_size: 10
+    - __name: Production
+      k8s_version: "1.21"
+      node_groups:
+        - name_suffix: shared
+          instance_type: c5.2xlarge
+          min_size: 1
+          max_size: 10
+  required:
+    - k8s_version
+    - node_groups
+    - core_services
+  properties:
+    k8s_version:
+      type: string
+      title: Kubernetes Version
+      description: The version of Kubernetes to run
+      enum:
+        - "1.19"
+        - "1.20"
+        - "1.21"
+    node_groups:
+      type: array
+      title: Node Groups
+      descrition: Node groups to provision
+      minItems: 1
+      items:
+        type: object
+        title: Node Group
+        description: Definition of a node group
+        required:
+          - name_suffix
+          - instance_type
+          - min_size
+          - max_size
+          - md_set_id
+        properties:
+          name_suffix:
+            type: string
+            title: Name
+            description: The name of the node group
+            pattern: "[a-z]{1,}[a-z0-9]{0,19}"
+            message:
+              pattern: Name must be between 1 and 20 lowercase letters or numbers, and must start with a letter.
+            default: ""
+          min_size:
+            type: number
+            title: Minimum Size
+            description: Minimum number of instances in the node group
+            default: 1
+            minimum: 0
+          max_size:
+            type: number
+            title: Maximum Size
+            description: Maximum number of instances in the node group
+            default: 10
+            minimum: 0
+          instance_type:
+            title: Instance type
+            description: Instance type to use in the node group
+            type: string
+            enum:
+              - c5.large
+              - c5.xlarge
+              - c5.2xlarge
+              - c5.4xlarge
+              - c5.9xlarge
+              - c5.12xlarge
+              - c5.18xlarge
+              - c5.24xlarge
+              - m5.large
+              - m5.xlarge
+              - m5.2xlarge
+              - m5.4xlarge
+              - m5.8xlarge
+              - m5.12xlarge
+              - m5.16xlarge
+              - m5.24xlarge
+              - t3.nano
+              - t3.micro
+              - t3.small
+              - t3.medium
+              - t3.large
+              - t3.xlarge
+              - t3.2xlarge
+              - p2.xlarge
+              - p2.8xlarge
+              - p2.16xlarge
+          md_set_id:
+            type: string
+    core_services:
+      type: object
+      title: Core Services
+      description: Configure core services in Kubernetes for Massdriver to manage
+      required: []
+      properties:
+        enable_ingress:
+          type: boolean
+          title: Enable Ingress
+          description: Enabling this will create an nginx ingress controller in the cluster, allowing internet traffic to flow into web accessible services within the cluster
+          default: false
+        route53_hosted_zones:
+          type: array
+          title: Route53 Hosted Zones
+          description: List any Route53 Hosted Zone IDs associated with this cluster to allow the Kubernetes to automatically manage DNS records and SSL certificates
+          default: []
+          items:
+            type: string
+            pattern: ^Z[A-Z0-9]{9,29}$
+            message:
+              pattern: Must be a valid Route53 Hosted Zone ID
+
+connections:
+  required:
+    - aws_authentication
+    - vpc
+  properties:
+    aws_authentication:
+      $ref: massdriver/aws-iam-role
+    vpc:
+      $ref: massdriver/aws-vpc
+
+artifacts:
+  required:
+    - kubernetes_cluster
+  properties:
+    kubernetes_cluster:
+      $ref: massdriver/kubernetes-cluster
+
+ui:
+  ui:order:
+    - k8s_version
+    - node_groups
+    - core_services
+    - "*"
+  node_groups:
+    items:
+      ui:order:
+        - name_suffix
+        - instance_type
+        - min_size
+        - max_size
+        - "*"
+      md_set_id:
+        ui:widget: hidden
+  core_services:
+    items:
+      ui:order:
+        - enable_ingress
+        - route53_hosted_zones

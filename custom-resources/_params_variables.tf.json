@@ -1,0 +1,13 @@
+{
+  "variable": {
+    "core_services": {
+      "type": "any"
+    },
+    "k8s_version": {
+      "type": "string"
+    },
+    "node_groups": {
+      "type": "any"
+    }
+  }
+}
