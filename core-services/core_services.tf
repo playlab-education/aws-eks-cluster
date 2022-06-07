@@ -15,8 +15,7 @@ data "aws_route53_zone" "hosted_zones" {
 
 
 module "cluster-autoscaler" {
-  source = "../../../provisioners/terraform/modules/k8s-cluster-autoscaler-aws"
-
+  source             = "github.com/massdriver-cloud/terraform-modules//k8s-cluster-autoscaler-aws?ref=54da4ef"
   kubernetes_cluster = local.kubernetes_cluster_artifact
   md_metadata        = var.md_metadata
   release            = "aws-cluster-autoscaler"
@@ -24,7 +23,7 @@ module "cluster-autoscaler" {
 }
 
 module "ingress_nginx" {
-  source             = "../../../provisioners/terraform/modules/k8s-ingress-nginx"
+  source             = "github.com/massdriver-cloud/terraform-modules//k8s-ingress-nginx?ref=54da4ef"
   count              = var.core_services.enable_ingress ? 1 : 0
   kubernetes_cluster = local.kubernetes_cluster_artifact
   md_metadata        = var.md_metadata
@@ -45,9 +44,8 @@ module "ingress_nginx" {
 }
 
 module "external_dns" {
-  for_each             = toset(var.core_services.route53_hosted_zones)
-  source               = "../../../provisioners/terraform/modules/k8s-external-dns-aws"
   count                = local.enable_external_dns ? 1 : 0
+  source               = "github.com/massdriver-cloud/terraform-modules//k8s-external-dns-aws?ref=54da4ef"
   kubernetes_cluster   = local.kubernetes_cluster_artifact
   md_metadata          = var.md_metadata
   release              = "external-dns-#{each.key}"
@@ -56,7 +54,7 @@ module "external_dns" {
 }
 
 module "cert_manager" {
-  source               = "../../../provisioners/terraform/modules/k8s-cert-manager-aws"
+  source               = "github.com/massdriver-cloud/terraform-modules//k8s-cert-manager-aws?ref=54da4ef"
   count                = local.enable_cert_manager ? 1 : 0
   kubernetes_cluster   = local.kubernetes_cluster_artifact
   md_metadata          = var.md_metadata
