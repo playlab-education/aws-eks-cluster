@@ -116,10 +116,6 @@ params:
                 const: m5.16xlarge
               - title: M5 General Purpose 24xlarge (96 vCPUs, 384.0 GiB)
                 const: m5.24xlarge
-              - title: T3 Nano (2 vCPUs for a 1h 12m burst, 0.5 GiB)
-                const: t3.nano
-              - title: T3 Micro (2 vCPUs for a 2h 24m burst, 1.0 GiB)
-                const: t3.micro
               - title: T3 Small (2 vCPUs for a 4h 48m burst, 2.0 GiB)
                 const: t3.small
               - title: T3 Medium (2 vCPUs for a 4h 48m burst, 4.0 GiB)
