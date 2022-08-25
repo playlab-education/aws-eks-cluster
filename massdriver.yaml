@@ -34,6 +34,61 @@ params:
     - node_groups
     - core_services
   properties:
+    observability:
+      type: object
+      title: Observability
+      description: Configure logging and metrics collection and delivery for your entire cluster
+      required:
+        -  logging
+      properties:
+        logging:
+          type: object
+          title: Logging
+          description: Configure logging for your cluster
+          required:
+            - destination 
+          properties:
+            destination:
+              type: string
+              title: Destination
+              description: Where to send logs
+              oneOf:
+              - title: "OpenSearch (in cluster)"
+                const: "opensearch"
+              - title: "Disabled"
+                const: "disabled"
+          dependencies:
+            destination:
+              oneOf:
+                - properties:
+                    destination:
+                      const: "opensearch"
+                    opensearch:
+                      type: object
+                      title: OpenSearch
+                      required:
+                        - persistence_size
+                        - retention_days
+                      properties:
+                        persistence_size:
+                          type: integer
+                          title: Persistence Size GiB
+                          description: Size of the persistent volume to use for OpenSearch
+                          minimum: 2
+                          maximum: 1000
+                          default: 10
+                        retention_days:
+                          type: integer
+                          title: Retention Days
+                          description: Number of days to retain logs and metrics in an OpenSearch Index
+                          minimum: 1
+                          maximum: 365
+                          default: 7
+                  required:
+                    - opensearch
+                - properties:
+                    destination:
+                      const: "Disabled"
     k8s_version:
       type: string
       title: Kubernetes Version
@@ -153,6 +208,7 @@ params:
             # TODO: Require a HostedZone ARN: arn:aws:route53:::hostedzone/Z0267127WDKJABXSA830 which isnt _quite a standard ARN.
             $ref: https://raw.githubusercontent.com/massdriver-cloud/artifact-definitions/main/definitions/types/aws-arn.json
 
+
 connections:
   required:
     - aws_authentication
@@ -175,6 +231,7 @@ ui:
     - k8s_version
     - node_groups
     - core_services
+    - observability
     - "*"
   node_groups:
     items:
@@ -192,3 +249,8 @@ ui:
       items:
         ui:field: dnsZonesDropdown
         cloud: aws
+  observability:
+    opensearch:
+      persistence_size:
+        ui:field: conversionFieldData
+        default: Gibabytes
