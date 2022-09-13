@@ -11,7 +11,7 @@ locals {
   }
   core_services_namespace = "md-core-services"
 
-  storage_class_to_efs_arn_map = { for elem in var.core_services.storage_class_to_efs_map : elem.storage_class_name => elem.efs_arn }
+  storage_class_to_efs_arn_map = try({ for elem in var.core_services.storage_class_to_efs_map : elem.storage_class_name => elem.efs_arn }, {})
 }
 
 data "aws_route53_zone" "hosted_zones" {
