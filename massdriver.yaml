@@ -238,7 +238,7 @@ params:
                         type: string
                         title: Storage Class Name
                         description: Unique name for storage class resource for the EFS file system the EKS cluster
-                        $ref: https://github.com/massdriver-cloud/artifact-definitions/blob/main/definitions/types/k8s-resource-name.json
+                        $ref: https://raw.githubusercontent.com/massdriver-cloud/artifact-definitions/main/definitions/types/k8s-resource-name.json
                       efs_arn:
                         type: string
                         title: EFS File System ARN
