@@ -51,6 +51,8 @@ Worker nodes are provisioned into private subnets for security.
 IRSA allows kubernetes pods to assume AWS IAM Roles, removing the need for static credentials to access AWS services.
 ### Secret Encryption
 An AWS KMS key is created and associated to the cluster to enable [encryption of secrets](https://kubernetes.io/docs/tasks/administer-cluster/encrypt-data/) at rest.
+### IMDSv2 Required on Node Groups
+The [Instance Metadata Service version 2 (IMDSv2)]() is required on all EKS node groups. IMDSv1, which was the cause of the [2019 CapitalOne data breach](https://divvycloud.com/capital-one-data-breach-anniversary/), is disabled on all node groups.
 
 ## Connecting
 After you have deployed a Kubernetes cluster through Massdriver, you may want to interact with the cluster using the powerful [kubectl](https://kubernetes.io/docs/reference/kubectl/) command line tool.
