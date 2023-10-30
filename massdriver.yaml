@@ -285,6 +285,7 @@ params:
           type: integer
           title: Control Plane Log Retention
           description: "Duration to retain control plane logs in AWS Cloudwatch (Note: control plane logs do not contain application or container logs)"
+          default: 7
           oneOf:
             - title: 7 days
               const: 7

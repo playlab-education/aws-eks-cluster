@@ -75,7 +75,7 @@ Form input parameters for configuring a bundle for deployment.
   - **`enabled`** *(boolean)*: Enables EKS Fargate. Default: `False`.
 - **`k8s_version`** *(string)*: The version of Kubernetes to run. Must be one of: `['1.22', '1.23', '1.24', '1.25', '1.26', '1.27']`. Default: `1.27`.
 - **`monitoring`** *(object)*
-  - **`control_plane_log_retention`** *(integer)*: Duration to retain control plane logs in AWS Cloudwatch (Note: control plane logs do not contain application or container logs).
+  - **`control_plane_log_retention`** *(integer)*: Duration to retain control plane logs in AWS Cloudwatch (Note: control plane logs do not contain application or container logs). Default: `7`.
     - **One of**
       - 7 days
       - 30 days
