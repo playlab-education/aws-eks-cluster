@@ -80,6 +80,7 @@ params:
         - "1.28"
         - "1.29"
         - "1.30"
+        - "1.31"
     fargate:
       type: object
       title: Fargate
@@ -110,7 +111,6 @@ params:
                   description: Namespaces that will run in Fargate
                   default:
                     - default
-
 
       properties:
         enabled:
@@ -311,8 +311,8 @@ params:
           title: Prometheus Configuration
           description: Configuration settings for the Prometheus instances that are automatically installed into the cluster to provide monitoring capabilities"
           required:
-          - persistence_enabled
-          - grafana_enabled
+            - persistence_enabled
+            - grafana_enabled
           properties:
             persistence_enabled:
               title: Enable Persistence
@@ -327,22 +327,19 @@ params:
           dependencies:
             grafana_enabled:
               oneOf:
-              - properties:
-                  grafana_enabled:
-                    const: false
-              - properties:
-                  grafana_enabled:
-                    const: true
-                  grafana_password:
-                    title: Grafana Admin Password
-                    description: Set the password for the `admin` user
-                    type: string
-                    format: password
-                required:
-                - grafana_password
-
-
-
+                - properties:
+                    grafana_enabled:
+                      const: false
+                - properties:
+                    grafana_enabled:
+                      const: true
+                    grafana_password:
+                      title: Grafana Admin Password
+                      description: Set the password for the `admin` user
+                      type: string
+                      format: password
+                  required:
+                    - grafana_password
 
 connections:
   required:
