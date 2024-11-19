@@ -33,14 +33,16 @@ module "cluster-autoscaler" {
   release            = "aws-cluster-autoscaler"
   namespace          = "kube-system"
   helm_additional_values = {
-    serviceMonitor = {
-      enabled   = true
-      namespace = "kube-system"
-      selector  = var.md_metadata.default_tags
-    }
+    # disabled for removing prometheus
+    # serviceMonitor = {
+    #   enabled   = true
+    #   namespace = "kube-system"
+    #   selector  = var.md_metadata.default_tags
+    # }
   }
 
-  depends_on = [module.prometheus-observability]
+# disabled for removing prometheus
+  # depends_on = [module.prometheus-observability]
 }
 
 module "ingress_nginx" {
@@ -52,12 +54,13 @@ module "ingress_nginx" {
   namespace          = kubernetes_namespace_v1.md-core-services.metadata.0.name
   helm_additional_values = {
     controller = {
-      metrics = {
-        enabled = true
-        serviceMonitor = {
-          enabled = true
-        }
-      }
+      # disabled for removing prometheus
+      # metrics = {
+      #   enabled = true
+      #   serviceMonitor = {
+      #     enabled = true
+      #   }
+      # }
       service = {
         annotations = {
           "service.beta.kubernetes.io/aws-load-balancer-backend-protocol"                  = "tcp"
@@ -69,7 +72,8 @@ module "ingress_nginx" {
     }
   }
 
-  depends_on = [module.prometheus-observability]
+  # disabled for removing prometheus
+  # depends_on = [module.prometheus-observability]
 }
 
 module "external_dns" {
@@ -81,7 +85,8 @@ module "external_dns" {
   namespace            = kubernetes_namespace_v1.md-core-services.metadata.0.name
   route53_hosted_zones = local.route53_zone_to_domain_map
 
-  depends_on = [module.prometheus-observability]
+  # disabled for removing prometheus
+  # depends_on = [module.prometheus-observability]
 }
 
 module "cert_manager" {
@@ -93,7 +98,8 @@ module "cert_manager" {
   namespace            = kubernetes_namespace_v1.md-core-services.metadata.0.name
   route53_hosted_zones = local.route53_zone_to_domain_map
 
-  depends_on = [module.prometheus-observability]
+  # disabled for removing prometheus
+  # depends_on = [module.prometheus-observability]
 }
 
 module "efs_csi" {
@@ -106,5 +112,6 @@ module "efs_csi" {
   namespace                    = kubernetes_namespace_v1.md-core-services.metadata.0.name
   storage_class_to_efs_arn_map = local.storage_class_to_efs_arn_map
 
-  depends_on = [module.prometheus-observability]
+  # disabled for removing prometheus
+  # depends_on = [module.prometheus-observability]
 }
